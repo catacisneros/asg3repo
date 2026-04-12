@@ -1,0 +1,64 @@
+
+/**
+ * Project template to be used as a framework for your solution.
+ *
+ * @author add here name, Panther ID, and class section of all authors
+ */
+public class Project3
+{
+    public static void main(String[] args)
+    {
+        new Project3();
+    }
+
+    /**
+     * Reads input file with points, instantiates graph, obtain shortest route,
+     * and graphs it.
+     */
+    public Project3()
+    {
+        //read filename
+        Scanner in = new Scanner(System.in);
+        System.out.print("Name of file: ");
+        String filename = in.nextLine();
+
+        //get points from file
+        ArrayList<Point> points = getPointsFromFile(filename);
+
+        //obtain adjacency matrix and define graph with it
+        int[][] matrix = generateMatrix(points);
+        Graph g = new Graph(matrix);
+
+        //compute solution to problem
+        int[] localSearchRoute = new int[points.size()];
+        double localSearchCost = g.TSP_localSearch(localSearchRoute);
+
+        FrameDisplay frame = new FrameDisplay(points, localSearchCost, localSearchRoute);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+    }
+
+    /**
+     * Reads points from given input file and returns them in an array list.
+     *
+     * @param filename name of input file
+     * @return array list of points
+     */
+    public ArrayList<Point> getPointsFromFile(String filename)
+    {
+        //TO IMPLEMENT
+    }
+
+    /**
+     * Generates a square matrix from the given array list of points.
+     * Cell [i][j] of the matrix will contain the distance between points[i] and
+     * points[j].
+     *
+     * @param points array list of points
+     * @return matrix of pairwise distances
+     */
+    public int[][] generateMatrix(ArrayList<Point> points)
+    {
+        //TO IMPLEMENT
+    }
+}
