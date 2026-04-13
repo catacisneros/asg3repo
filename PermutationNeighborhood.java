@@ -22,7 +22,11 @@ public class PermutationNeighborhood
      */
     public PermutationNeighborhood(int[] a)
     {
-        //TO IMPLEMENT
+        SIZE = a.length;
+        p = new int[SIZE];
+        System.arraycopy(a, 0, p, 0, SIZE);
+        loc1 = 0;
+        loc2 = 1;
     }
 
     /**
@@ -31,7 +35,7 @@ public class PermutationNeighborhood
      */
     public boolean hasNext()
     {
-        //TO IMPLEMENT
+        return loc1 != SIZE - 1;
     }
 
     /**
@@ -41,6 +45,31 @@ public class PermutationNeighborhood
      */
     public int[] next()
     {
-        //TO IMPLEMENT
+        if (hasNext())
+        {
+            // copy p to a
+            int[] a = new int[SIZE];
+            System.arraycopy(p, 0, a, 0, SIZE);
+
+            // exchange elements at locations loc1 and loc2
+            a[loc1] = p[loc2];
+            a[loc2] = p[loc1];
+
+            // advance loc1 and loc2
+            if (loc2 == SIZE - 1)
+            {
+                loc1++;
+                loc2 = loc1 + 1;
+            }
+            else
+            {
+                loc2++;
+            }
+            return a;
+        }
+        else
+        {
+            return null;
+        }
     }
 }

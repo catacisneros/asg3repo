@@ -1,4 +1,10 @@
 
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
+import javax.swing.JFrame;
+
 /**
  * Project template to be used as a framework for your solution.
  *
@@ -17,19 +23,19 @@ public class Project3
      */
     public Project3()
     {
-        //read filename
+        // read filename
         Scanner in = new Scanner(System.in);
         System.out.print("Name of file: ");
         String filename = in.nextLine();
 
-        //get points from file
+        // get points from file
         ArrayList<Point> points = getPointsFromFile(filename);
 
-        //obtain adjacency matrix and define graph with it
+        // obtain adjacency matrix and define graph with it
         int[][] matrix = generateMatrix(points);
         Graph g = new Graph(matrix);
 
-        //compute solution to problem
+        // compute solution to problem
         int[] localSearchRoute = new int[points.size()];
         double localSearchCost = g.TSP_localSearch(localSearchRoute);
 
@@ -46,7 +52,24 @@ public class Project3
      */
     public ArrayList<Point> getPointsFromFile(String filename)
     {
-        //TO IMPLEMENT
+        ArrayList<Point> points = new ArrayList<>();
+        try
+        {
+            Scanner sc = new Scanner(new File(filename));
+            int n = sc.nextInt(); // first line is number of points
+            for (int i = 0; i < n; i++)
+            {
+                int x = sc.nextInt();
+                int y = sc.nextInt();
+                points.add(new Point(x, y));
+            }
+            sc.close();
+        }
+        catch (FileNotFoundException e)
+        {
+            System.out.println("File not found: " + filename);
+        }
+        return points;
     }
 
     /**
@@ -59,6 +82,17 @@ public class Project3
      */
     public int[][] generateMatrix(ArrayList<Point> points)
     {
-        //TO IMPLEMENT
+        int n = points.size();
+        int[][] matrix = new int[n][n];
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                int dx = points.get(i).x - points.get(j).x;
+                int dy = points.get(i).y - points.get(j).y;
+                matrix[i][j] = (int) Math.sqrt(dx * dx + dy * dy);
+            }
+        }
+        return matrix;
     }
 }

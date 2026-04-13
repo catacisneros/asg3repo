@@ -1,4 +1,6 @@
 
+import java.util.Random;
+
 /**
  * Implements a Graph. Uses an adjacency matrix to represent the graph.
  *
@@ -15,7 +17,8 @@ public class Graph implements GraphInterface
      */
     public Graph()
     {
-        //TO IMPLEMENT
+        verticesNumber = 5;
+        matrix = new int[verticesNumber][verticesNumber];
     }
 
     /**
@@ -25,7 +28,8 @@ public class Graph implements GraphInterface
      */
     public Graph(int n)
     {
-        //TO IMPLEMENT
+        verticesNumber = n;
+        matrix = new int[verticesNumber][verticesNumber];
     }
 
     /**
@@ -36,7 +40,11 @@ public class Graph implements GraphInterface
      */
     public Graph(int[][] matrix)
     {
-        //TO IMPLEMENT
+        verticesNumber = matrix.length;
+        this.matrix = new int[verticesNumber][verticesNumber];
+        for (int i = 0; i < verticesNumber; i++)
+            for (int j = 0; j < verticesNumber; j++)
+                this.matrix[i][j] = matrix[i][j];
     }
 
     /**
@@ -48,7 +56,8 @@ public class Graph implements GraphInterface
      */
     public void addEdge(int v, int w, int weight)
     {
-        //TO IMPLEMENT
+        matrix[v][w] = weight;
+        matrix[w][v] = weight;
     }
 
     /**
@@ -60,7 +69,25 @@ public class Graph implements GraphInterface
      */
     public int[] findAdjacencyVertices(int v)
     {
-        //TO IMPLEMENT
+        // count adjacent vertices
+        int count = 0;
+        for (int i = 0; i < verticesNumber; i++)
+        {
+            if (matrix[v][i] != 0)
+                count++;
+        }
+        // collect them
+        int[] adjacent = new int[count];
+        int index = 0;
+        for (int i = 0; i < verticesNumber; i++)
+        {
+            if (matrix[v][i] != 0)
+            {
+                adjacent[index] = i;
+                index++;
+            }
+        }
+        return adjacent;
     }
 
     /**
@@ -70,7 +97,7 @@ public class Graph implements GraphInterface
      */
     public int getNumberOfVertices()
     {
-        //TO IMPLEMENT
+        return verticesNumber;
     }
 
     /**
@@ -78,11 +105,11 @@ public class Graph implements GraphInterface
      *
      * @param v given vertex
      * @param w given vertex
-     * @return
+     * @return weight of edge
      */
     public int getWeight(int v, int w)
     {
-        //TO IMPLEMENT
+        return matrix[v][w];
     }
 
     /**
@@ -93,7 +120,8 @@ public class Graph implements GraphInterface
      */
     public void removeEdge(int v, int w)
     {
-        //TO IMPLEMENT
+        matrix[v][w] = 0;
+        matrix[w][v] = 0;
     }
 
     /**
@@ -103,7 +131,16 @@ public class Graph implements GraphInterface
      */
     public String toString()
     {
-        //TO IMPLEMENT
+        String s = "";
+        for (int i = 0; i < verticesNumber; i++)
+        {
+            for (int j = 0; j < verticesNumber; j++)
+            {
+                s += matrix[i][j] + " ";
+            }
+            s += "\n";
+        }
+        return s;
     }
 
     /**
@@ -115,7 +152,14 @@ public class Graph implements GraphInterface
      */
     private int totalDistance(int[] a)
     {
-        //TO IMPLEMENT
+        int n = verticesNumber;
+        int totalWeight = 0;
+        for (int i = 0; i < n; i++)
+        {
+            int weight = matrix[a[i]][a[(i + 1) % n]];
+            totalWeight += weight;
+        }
+        return totalWeight;
     }
 
     /**
@@ -127,7 +171,20 @@ public class Graph implements GraphInterface
      */
     private void randomPermutation(int[] a)
     {
-        //TO IMPLEMENT
+        for (int i = 0; i < a.length; i++)
+            a[i] = i;
+
+        Random rnd = new Random();
+        for (int i = a.length - 1; i > 0; i--)
+        {
+            int randomLocation = rnd.nextInt(i + 1);
+            if (randomLocation != i)
+            {
+                int temp = a[i];
+                a[i] = a[randomLocation];
+                a[randomLocation] = temp;
+            }
+        }
     }
 
     /**
@@ -142,6 +199,45 @@ public class Graph implements GraphInterface
      */
     public int TSP_localSearch(int[] shortestRoute)
     {
-        //TO IMPLEMENT
+        int RESTARTS = 100;
+        int globalBest = Integer.MAX_VALUE;
+        int n = verticesNumber;
+        int[] currentRoute = new int[n];
+
+        for (int r = 0; r < RESTARTS; r++)
+        {
+            // generate a new random starting route
+            randomPermutation(currentRoute);
+            int currentDist = totalDistance(currentRoute);
+
+            boolean improved = true;
+            while (improved)
+            {
+                improved = false;
+                PermutationNeighborhood pn = new PermutationNeighborhood(currentRoute);
+                while (pn.hasNext())
+                {
+                    int[] a = pn.next();
+                    int neighborDist = totalDistance(a);
+                    if (neighborDist < currentDist)
+                    {
+                        for (int i = 0; i < n; i++)
+                            currentRoute[i] = a[i];
+                        currentDist = neighborDist;
+                        improved = true;
+                        break;
+                    }
+                }
+            }
+
+            if (currentDist < globalBest)
+            {
+                globalBest = currentDist;
+                for (int i = 0; i < n; i++)
+                    shortestRoute[i] = currentRoute[i];
+            }
+        }
+
+        return globalBest;
     }
 }
