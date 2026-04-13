@@ -1,4 +1,7 @@
 
+import java.util.ArrayList;
+import javax.swing.JFrame;
+
 /**
  * Defines a frame to which a panel with drawings will be added.
  *
@@ -6,13 +9,16 @@
  */
 public class FrameDisplay extends JFrame
 {
-    int WIDTH = 450;
-    int HEIGHT = 450;
+    int WIDTH = 650;
+    int HEIGHT = 650;
 
     public FrameDisplay(ArrayList<Point> points,
                         double localSearchCost,
                         int[] localSearchRoute)
     {
-        //TO IMPLEMENT
+        setTitle("Shortest Route Obtained With Local Search");
+        setSize(WIDTH, HEIGHT);
+        GraphDisplay panel = new GraphDisplay(points, localSearchCost, localSearchRoute);
+        add(panel);
     }
 }
